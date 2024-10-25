@@ -1,3 +1,4 @@
+[![Hex Version](https://img.shields.io/hexpm/v/statistex_robust.svg)](https://hex.pm/packages/statistex_robust) [![Hex Docs](https://img.shields.io/badge/docs-hexpm-blue.svg)](https://hexdocs.pm/statistex_robust/)
 
 # Statistex.Robust
 
