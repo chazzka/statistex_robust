@@ -3,12 +3,12 @@
 
 Statistex.Robust provides robust, range-based statistical methods built on top of the [Statistex](https://hexdocs.pm/statistex/readme.html) library.
 
-
+Github repo: https://github.com/chazzka/statistex_robust
 
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
+The package can be installed
 by adding `statistex_robust` to your list of dependencies in `mix.exs`:
 
 ```elixir

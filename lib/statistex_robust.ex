@@ -30,16 +30,16 @@ defmodule Statistex.Robust do
   end
 
   @doc """
-    Runs R script to calculate medcouple on array.
+  Runs R script to calculate medcouple on array.
 
-    Note that medcouple does NOT return a range, but a value.
-    For range estimation using medcouple refer to `adjusted_box/1`.
+  Note that medcouple does NOT return a range, but a value.
+  For range estimation using medcouple refer to `adjusted_box/1`.
 
-    Medcouple is a robust statistic that measures the skewness of a univariate distribution.
+  Medcouple is a robust statistic that measures the skewness of a univariate distribution.
 
-    Depends on Rscript (https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/Rscript).
+  Depends on Rscript (https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/Rscript).
 
-    Rscript has to be available in shell path.
+  Rscript has to be available in shell path.
 
   ## Examples
       iex> Statistex.Robust.medcouple([1,1,1,1,1,1])
@@ -55,7 +55,7 @@ defmodule Statistex.Robust do
   end
 
   @doc """
-    Runs R script to calculate `medcouple/1` for indexth matrix row.
+  Runs R script to calculate `medcouple/1` for indexth matrix row.
 
   ## Examples
       iex> Statistex.Robust.medcouple([[1],[1],[1],[1],[1],[1]], 0)
@@ -68,11 +68,11 @@ defmodule Statistex.Robust do
   end
 
   @doc """
-    Runs R script to calculate adjusted box for array (https://en.wikipedia.org/wiki/Box_plot).
+  Runs R script to calculate adjusted box for array (https://en.wikipedia.org/wiki/Box_plot).
 
-    Depends on medcouple calculation (see: Statistex.Robust.medcouple).
+  Depends on medcouple calculation (see: Statistex.Robust.medcouple).
 
-    Input is sorted automatically.
+  Input is sorted automatically.
 
   ## Examples
       iex> Statistex.Robust.adjusted_box([1,1,1,1,1,1])
@@ -95,11 +95,11 @@ defmodule Statistex.Robust do
   end
 
   @doc """
-    Runs R script to calculate `adjusted_box/1` for indexth matrix row (https://en.wikipedia.org/wiki/Box_plot).
+  Runs R script to calculate `adjusted_box/1` for indexth matrix row (https://en.wikipedia.org/wiki/Box_plot).
 
-    Depends on medcouple calculation (see: Statistex.Robust.medcouple).
+  Depends on medcouple calculation (see: Statistex.Robust.medcouple).
 
-    Input is sorted automatically.
+  Input is sorted automatically.
 
   ## Examples
       iex> Statistex.Robust.adjusted_box([[1],[1],[1],[1],[1],[1]], 0)
@@ -111,11 +111,11 @@ defmodule Statistex.Robust do
   end
 
   @doc """
-    Estimates range using Z-score.
+  Estimates range using Z-score.
 
-    Depends on medcouple calculation (see: Statistex.Robust.medcouple).
+  Depends on medcouple calculation (see: Statistex.Robust.medcouple).
 
-    Input is sorted automatically.
+  Input is sorted automatically.
 
   ## Examples
       iex> Statistex.Robust.z_score([39.0157, 50.9985, 45.1634, 63.6410, 48.1637, 54.4420, 56.6881, 49.0387, 51.9994, 45.2520], 3)
@@ -128,7 +128,7 @@ defmodule Statistex.Robust do
   end
 
   @doc """
-    Estimates range using `z_score/2` for index'th row of a matrix.
+  Estimates range using `z_score/2` for index'th row of a matrix.
 
   ## Examples
       iex> Statistex.Robust.z_score([[39.0157], [50.9985], [45.1634], [63.6410], [48.1637], [54.4420], [56.6881], [49.0387], [51.9994], [45.2520]], 3,0)
@@ -141,15 +141,14 @@ defmodule Statistex.Robust do
   end
 
   @doc """
-      Estimates range using Median Absolute Deviation (MAD).
+  Estimates range using Median Absolute Deviation (MAD).
 
-    ## Examples
+  ## Examples
+      iex> Statistex.Robust.mad([1, 2, 3, 4, 5, 6, 7], 3)
+      {-2.0, 10.0}
 
-        iex> Statistex.Robust.mad([1, 2, 3, 4, 5, 6, 7], 3)
-        {-2.0, 10.0}
-
-        iex> Statistex.Robust.mad([10, 15, 20, 30, 50], 2)
-        {0.0, 40.0}
+      iex> Statistex.Robust.mad([10, 15, 20, 30, 50], 2)
+      {0.0, 40.0}
   """
   def mad(arr, threshold \\ 3) do
     med = Statistex.median(arr)
@@ -158,31 +157,30 @@ defmodule Statistex.Robust do
   end
 
   @doc """
-      Estimates range using `mad/2` for a specified column (index) of a matrix.
+  Estimates range using `mad/2` for a specified column (index) of a matrix.
 
-    ## Examples
+  ## Examples
+      iex> Statistex.Robust.mad([[1], [2], [3], [4], [5], [6], [7]], 3, 0)
+      {-2.0, 10.0}
 
-        iex> Statistex.Robust.mad([[1], [2], [3], [4], [5], [6], [7]], 3, 0)
-        {-2.0, 10.0}
-
-        iex> Statistex.Robust.mad([[10], [15], [20], [30], [50]], 4, 0)
-        {-20.0, 60.0}
+      iex> Statistex.Robust.mad([[10], [15], [20], [30], [50]], 4, 0)
+      {-20.0, 60.0}
   """
   def mad(matrix, threshold, index) do
     Enum.map(matrix, fn x -> Enum.at(x, index) end) |> mad(threshold)
   end
 
   @doc """
-      Calculates an asymmetric interval around the median using a modified version
-      of the MAD for skewed data by separating positive and negative deviations from the median.
+  Calculates an asymmetric interval around the median using a modified version
+  of the MAD for skewed data by separating positive and negative deviations from the median.
 
-    ## Examples
+  ## Examples
 
-        iex> Statistex.Robust.mad_skew([1, 2, 3, 4, 5, 6, 7], 3)
-        {-0.5, 8.5}
+      iex> Statistex.Robust.mad_skew([1, 2, 3, 4, 5, 6, 7], 3)
+      {-0.5, 8.5}
 
-        iex> Statistex.Robust.mad_skew([10, 15, 20, 30, 50], 4)
-        {0.0, 60.0}
+      iex> Statistex.Robust.mad_skew([10, 15, 20, 30, 50], 4)
+      {0.0, 60.0}
   """
   def mad_skew(arr, threshold \\ 3) do
     med = Statistex.median(arr)
@@ -194,14 +192,14 @@ defmodule Statistex.Robust do
   end
 
   @doc """
-    Estimates range using `mad_skew/2` for a specified column (index) of a matrix.
+  Estimates range using `mad_skew/2` for a specified column (index) of a matrix.
 
-    ## Examples
-        iex> Statistex.Robust.mad_skew([[1], [2], [3], [4], [5], [6], [7]], 3, 0)
-        {-0.5, 8.5}
+  ## Examples
+      iex> Statistex.Robust.mad_skew([[1], [2], [3], [4], [5], [6], [7]], 3, 0)
+      {-0.5, 8.5}
 
-        iex> Statistex.Robust.mad_skew([[10], [15], [20], [30], [50]], 2, 0)
-        {10.0, 40.0}
+      iex> Statistex.Robust.mad_skew([[10], [15], [20], [30], [50]], 2, 0)
+      {10.0, 40.0}
   """
   def mad_skew(matrix, threshold, index) do
     matrix
