@@ -38,6 +38,7 @@ defmodule Statistex.Robust do
   Medcouple is a robust statistic that measures the skewness of a univariate distribution.
 
   Depends on Rscript (https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/Rscript).
+  Depends on library robustbase (https://cran.r-project.org/web/packages/robustbase/index.html)
 
   Rscript has to be available in shell path.
 
@@ -48,10 +49,32 @@ defmodule Statistex.Robust do
       0.4
   """
   def medcouple(arr) do
-    {result, _exit_code} =
-      System.cmd("Rscript", ["lib/medcouple.R"] ++ (arr |> Enum.map(fn x -> "#{x}" end)))
+    args = arr |> Enum.map(&to_string/1)
 
-    String.trim(result) |> String.to_float()
+    # Capture both stdout and stderr
+    {result, exit_code} =
+      System.cmd("Rscript", ["-e", r_script()] ++ args, stderr_to_stdout: true)
+
+    if exit_code != 0 do
+      # Rscript ended with an error, handle it accordingly
+      {:error, "Rscript failed with exit code #{exit_code}: #{String.trim(result)}"}
+    else
+      String.trim(result) |> String.to_float()
+    end
+  end
+
+  defp r_script do
+    """
+    if (!requireNamespace("robustbase", quietly = TRUE)) {
+      stop("The 'robustbase' package is required but not installed. Please install it using install.packages('robustbase').")
+    }
+    library(robustbase)
+    args <- commandArgs(trailingOnly = TRUE)
+    arr <- as.numeric(args)
+    options(mc_doScale_quiet=TRUE)
+    result <- mc(arr)
+    cat(sprintf("%.10f", result))
+    """
   end
 
   @doc """
