@@ -66,7 +66,7 @@ defmodule Statistex.Robust do
   defp r_script do
     """
     if (!requireNamespace("robustbase", quietly = TRUE)) {
-      stop("The 'robustbase' package is required but not installed. Please install it using install.packages('robustbase').")
+      install.packages("robustbase", repos = "http://cran.rstudio.com/")
     }
     library(robustbase)
     args <- commandArgs(trailingOnly = TRUE)
