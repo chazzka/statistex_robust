@@ -5,7 +5,7 @@ defmodule StatistexRobust.MixProject do
     [
       app: :statistex_robust,
       description: "Robust statistics based on Statistex library",
-      version: "0.1.1",
+      version: "0.1.2",
       elixir: "~> 1.17",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -44,7 +44,7 @@ defmodule StatistexRobust.MixProject do
   defp deps do
     [
       {:statistex, "~> 1.0"},
-
+      {:briefly, "~> 0.3"}, # temporary filesystem for large R inputs
       # dependencies for `examples` env
       {:nimble_csv, "~> 1.1", only: :example},
       {:ex_doc, "~> 0.25", only: :dev, runtime: false}

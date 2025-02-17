@@ -51,12 +51,16 @@ defmodule Statistex.Robust do
   def medcouple(arr) do
     args = arr |> Enum.map(&to_string/1)
 
-    # Capture both stdout and stderr
+    {:ok, r_script_path} = Briefly.create(extname: ".R")
+    File.write!(r_script_path, r_script())
+
+    {:ok, input_path} = Briefly.create(extname: ".txt")
+    File.write!(input_path, Enum.join(args, "\n") <> "\n")
+
     {result, exit_code} =
-      System.cmd("Rscript", ["-e", r_script()] ++ args, stderr_to_stdout: true)
+      System.cmd("Rscript", [r_script_path, input_path], stderr_to_stdout: true)
 
     if exit_code != 0 do
-      # Rscript ended with an error, handle it accordingly
       {:error, "Rscript failed with exit code #{exit_code}: #{String.trim(result)}"}
     else
       String.trim(result) |> String.to_float()
@@ -69,8 +73,8 @@ defmodule Statistex.Robust do
       stop("The 'robustbase' package is required but not installed. Please install it using install.packages('robustbase').")
     }
     library(robustbase)
-    args <- commandArgs(trailingOnly = TRUE)
-    arr <- as.numeric(args)
+    args_file <- commandArgs(trailingOnly = TRUE)[1]
+    arr <- scan(args_file, what = numeric(), quiet = TRUE)
     options(mc_doScale_quiet=TRUE)
     result <- mc(arr)
     cat(sprintf("%.10f", result))
